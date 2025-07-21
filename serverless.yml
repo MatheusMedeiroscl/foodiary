@@ -1,0 +1,31 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: matheusmedeirosclemente
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: foodiary-jstack
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: us-east-1
+  architecture: arm64
+
+package:
+  individually: true
+build:
+  esbuild:
+    minify: true
+    sourcemap: false
+
+functions:
+  signin:
+    handler: src/signin.handler
+    events:
+      - httpApi:
+          path: /signin
+          method: POST
+  signup:
+    handler: src/signup.handler
+    events:
+      - httpApi:
+          path: /signup
+          method: POST
