@@ -7,7 +7,7 @@ export const usersTable = pgTable('users', {
     password: varchar({ length: 255}).notNull(),
     goal: varchar({length: 8 }).notNull(),
     gender: varchar({length: 6 }).notNull(),
-    birthDate: date('birth_date').notNull(),
+    birthDate: date('birth_date', { mode: 'date' }).notNull(),
     height: integer().notNull(),
     weight: integer().notNull(),
     activityLevel: integer('activity_level').notNull(),
