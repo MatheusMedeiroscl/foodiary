@@ -10,8 +10,11 @@ provider:
   runtime: nodejs22.x
   region: us-east-1
   architecture: arm64
+  timeout: 30
   environment:
     DATABASE_URL: ${env:DATABASE_URL}  
+    JWT_SECRET: ${env:JWT_SECRET}
+
 
 package:
   individually: true
@@ -23,14 +26,12 @@ build:
 functions:
   signin:
     handler: src/functions/signin.handler
-    timeout: 30
     events:
       - httpApi:
           path: /signin
           method: POST
   signup:
     handler: src/functions/signup.handler
-    timeout: 30
     events:
       - httpApi:
           path: /signup
