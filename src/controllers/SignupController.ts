@@ -5,8 +5,9 @@ import {db} from '../db/index'
 import { usersTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { hash } from "bcryptjs";
-import {sign} from 'jsonwebtoken';
 import { signAccessToken } from "../lib/jwt";
+import { calculateGoals } from "../lib/CalculateGoals";
+
 
 
 const schema = z.object({
@@ -43,17 +44,24 @@ export class SignupController {
         }
 
 
-        const {account, ...rest} = data;
+        const { account, ...rest } = data;
+
+        const goals = calculateGoals({
+            activityLevel: rest.activityLevel,
+            birthDate: new Date(rest.birthDate),
+            gender: rest.gender,
+            goal: rest.goal,
+            height: rest.height,
+            weight: rest.weight,
+        });
+
         const hashedPassword =  await hash(account.password, 8)
 
         const [user] = await db.insert(usersTable).values({
             ...account,
             ...rest,
-            password: hashedPassword,
-            calories: 0,
-            carbohydrates: 0,
-            proteins: 0,
-            fats: 0,
+            ...goals,
+            password: hashedPassword,   
         }).returning({ id: usersTable.id });
 
 
