@@ -1,5 +1,5 @@
 import { pgTable, uuid, varchar, date, integer, pgEnum, json, timestamp } from "drizzle-orm/pg-core";
-
+// schema das tabelas enviadas para o banco e para acesso aos dados
 export const usersTable = pgTable('users', {
     id: uuid().primaryKey().defaultRandom(),
     name: varchar({ length: 255}).notNull(),

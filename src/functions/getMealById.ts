@@ -4,6 +4,7 @@ import { parseProtectedEvent } from '../utils/parseProtectedEvent';
 import { unauthorized } from '../utils/http';
 import { GetMealByIdController } from '../controllers/GetMealByIdController';
 
+//recebe os dados HTTP e responde par o usuário oque o controller ou o erro responder
 export async function handler(event: APIGatewayProxyEventV2) {
   try {
     const request = parseProtectedEvent(event);

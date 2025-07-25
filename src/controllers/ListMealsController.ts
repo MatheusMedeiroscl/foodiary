@@ -20,10 +20,10 @@ export class ListeMealsController {
             return badRequest({errors: error.issues})
         }
 
+        // cria uma data limite para validação do GET
         const endDate = new Date(data.date);
         endDate.setUTCHours(23,59,59,59);
-        
-
+    
         const meals = await db.query.mealsTable.findMany({
             columns: {
                 id: true,

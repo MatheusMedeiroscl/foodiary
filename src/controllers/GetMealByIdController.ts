@@ -6,7 +6,7 @@ import { HttpResponse, ProtectedHttpRequest } from '../types/Http';
 import { badRequest, ok } from '../utils/http';
 import { eq, and, gte, lte } from 'drizzle-orm';
 
-
+//valida o id
 const schema = z.object({
     mealId: z.uuid(),
 })
@@ -20,7 +20,7 @@ export class GetMealByIdController {
             return badRequest({errors: error.issues})
         }
 
-
+        // faz um select e define os dados que serão mostrados
         const meal = await db.query.mealsTable.findFirst({
             columns: {
                 id: true,

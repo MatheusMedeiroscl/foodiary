@@ -2,6 +2,8 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { mealsTable } from "../db/schema";
 
+
+//envia para a IA as argv que precisam ser decodificados (imagens e audios)
 export class ProcessMeal{
     static async process({fileKey}: {fileKey: string}) {
         const meal = await db.query.mealsTable.findFirst({

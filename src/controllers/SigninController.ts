@@ -9,6 +9,7 @@ import { badRequest, ok, unauthorized } from '../utils/http';
 import {sign} from 'jsonwebtoken';
 import { signAccessToken } from '../lib/jwt';
 
+// valida o email e a senha
 const schema = z.object({
     email: z.email(),
     password: z.string().min(8)
@@ -17,13 +18,11 @@ const schema = z.object({
 export class SigninController {
     static async handle({body}: HttpRequest): Promise<HttpResponse>{
         const {success, error, data} = schema.safeParse(body)
-        
         if(!success){
             return badRequest({errors: error.issues})
         }
 
-
-        
+        //procura o user pelo email
         const user = await db.query.usersTable.findFirst({
             columns: {
                 id: true,
@@ -31,13 +30,14 @@ export class SigninController {
                 password: true,
 
             }, 
-            where: eq(usersTable.email, data.email),
+                where: eq(usersTable.email, data.email),
             })  
             
         if(!user){
             return unauthorized({error: 'invalid email'})
         }    
         
+        //valida a senha hasheada do usuário
         const isPasswordValid = await compare(data.password, user.password);
 
         if(!isPasswordValid){

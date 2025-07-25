@@ -4,8 +4,8 @@ import { MeController } from '../controllers/MeController';
 import { parseProtectedEvent } from '../utils/parseProtectedEvent';
 import { unauthorized } from '../utils/http';
 
+//recebe os dados HTTP e responde par o usuário oque o controller ou o erro responder
 export async function handler(event: APIGatewayProxyEventV2) {
-
   try{
     const request = parseProtectedEvent(event);
     const response = await MeController.handle(request);

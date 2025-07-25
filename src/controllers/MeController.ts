@@ -10,7 +10,7 @@ import {sign} from 'jsonwebtoken';
 import { signAccessToken } from '../lib/jwt';
 
 
-
+// Retorna os dados do user
 export class MeController {
     static async handle({userId}: ProtectedHttpRequest): Promise<HttpResponse>{
         const user = await db.query.usersTable.findFirst({

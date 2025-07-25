@@ -8,7 +8,7 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import { s3Client } from '../clients/s3Client';
 
-
+// valida o tipo de arquivo que vai receber
 const schema = z.object({
     fileType: z.enum(['audio/m4a', 'image/jpeg'])
 })
@@ -21,7 +21,7 @@ export class CreateMealController {
         if(!success){
             return badRequest({errors: error.issues})
         }
-
+        // cria um nome para o arquivo em formato de chave única
         const fileId = randomUUID();
         const ext = data.fileType === 'audio/m4a' ? '.m4a' : '.jpg';
         const fileKey = `${fileId}${ext}`
@@ -30,10 +30,10 @@ export class CreateMealController {
             Bucket: process.env.BUCKET_NAME,
             Key: fileKey,
         });
-
+        // conforme o que pedido pelo S3 de uma url assinada
         const presignerUrl = await getSignedUrl(s3Client, command);
 
-
+        // add o values conforme o schema
        const [meal] = await db
         .insert(mealsTable)
         .values({
