@@ -1,9 +1,12 @@
 import { z } from 'zod';
-
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { db } from '../db';
 import { mealsTable } from '../db/schema';
 import { HttpResponse, ProtectedHttpRequest } from '../types/Http';
 import { badRequest, created } from '../utils/http';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { randomUUID } from 'crypto';
+import { s3Client } from '../clients/s3Client';
 
 
 const schema = z.object({
@@ -19,6 +22,18 @@ export class CreateMealController {
             return badRequest({errors: error.issues})
         }
 
+        const fileId = randomUUID();
+        const ext = data.fileType === 'audio/m4a' ? '.m4a' : '.jpg';
+        const fileKey = `${fileId}${ext}`
+
+        const command = new PutObjectCommand({
+            Bucket: process.env.BUCKET_NAME,
+            Key: fileKey,
+        });
+
+        const presignerUrl = await getSignedUrl(s3Client, command);
+
+
        const [meal] = await db
         .insert(mealsTable)
         .values({
@@ -33,7 +48,9 @@ export class CreateMealController {
       .returning({ id: mealsTable.id });
 
 
-        return created({ mealId : meal.id})
+        return created({ 
+            mealId : meal.id,
+            uploadUrl: presignerUrl})
     }
 
 }
